@@ -71,7 +71,7 @@ class ChatGPT(cmd2.Cmd):
         self.poutput(result)
 
     def do_set_api_key(self, arg):
-        """Set openapi key"""
+        """Set openai api key for current session only"""
         if arg and arg.strip() != "" and len(arg) > 8:
             openai.api_key = arg.strip()
         else:

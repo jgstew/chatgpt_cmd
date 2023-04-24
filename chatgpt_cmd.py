@@ -25,14 +25,28 @@ class ChatGPT(cmd2.Cmd):
 
         # remove history command:
         del cmd2.Cmd.do_history
+
+        # alias exit for quit
+        self.do_exit = self.do_quit
         
         # load env vars from .env file
         dotenv.load_dotenv()
         # load api key from env
         openai.api_key = os.getenv('OPENAI_API_KEY')
 
+    def default(self, arg):
+        """if unknown command, send full thing to chatgpt"""
+        self.poutput(f" - Prompt: {arg.raw}")
+        self.do_sendgpt(arg.raw)
+
     def do_sendgpt(self, arg):
         """Send a message to ChatGPT"""
+
+        if not openai.api_key or openai.api_key.strip() == "":
+            self.perror("No OPENAI_API_KEY environment variable found!")
+            self.pfeedback("Use the set_api_key command to set the api key for this session")
+            return True
+        
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -48,25 +62,20 @@ class ChatGPT(cmd2.Cmd):
         # output the response:
         self.poutput(result)
 
+    def do_set_api_key(self, arg):
+        """Set openapi key"""
+        if arg and arg.strip() != "" and len(arg) > 8:
+            openai.api_key = arg.strip()
+        else:
+            self.perror("Invalid API Key Entered!")
+
     def do_quit(self, arg):
         """Exit the program if arg empty"""
         if arg.strip() == "":
             self.poutput("Exiting ChatGPT...")
             return True
         else:
-            self.do_sendgpt("quit " + arg)
-
-    def do_exit(self, arg):
-        """Exit the program if arg empty"""
-        if arg.strip() == "":
-            self.poutput("Exiting ChatGPT...")
-            return True
-        else:
-            self.do_sendgpt("exit " + arg)
-    
-    def default(self, arg):
-        """if unknown command, send full thing to chatgpt"""
-        self.do_sendgpt(arg)
+            self.do_sendgpt(arg.raw)
 
 if __name__ == '__main__':
     ChatGPT().cmdloop()

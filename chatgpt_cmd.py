@@ -69,10 +69,7 @@ class ChatGPT(cmd2.Cmd):
             )
             return True
 
-        time_local = (
-            datetime.datetime.now(datetime.timezone.utc)
-            .astimezone()
-        )
+        time_local = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -130,7 +127,7 @@ class ChatGPT(cmd2.Cmd):
     def do_quit(self, statement):
         """Exit the program if arg empty"""
         if statement.strip() == "":
-            self.poutput("Exiting ChatGPT...")
+            self.poutput("Exiting ChatGPT_CMD...")
             return True
         else:
             self.do_sendgpt(statement.raw)

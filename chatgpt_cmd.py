@@ -5,11 +5,30 @@ import openai
 import dotenv
 
 class ChatGPT(cmd2.Cmd):
-    prompt = 'chatgpt> '
+    prompt = 'ChatGPT> '
 
     def __init__(self):
         super().__init__()
+
+        # remove commands:
+        del cmd2.Cmd.do_alias
+        del cmd2.Cmd.do_edit
+        del cmd2.Cmd.do_macro
+        del cmd2.Cmd.do_run_pyscript
+        del cmd2.Cmd.do_run_script
+        del cmd2.Cmd.do_set
+        del cmd2.Cmd.do_shell
+        del cmd2.Cmd.do_shortcuts
+
+        # rename command:
+        cmd2.Cmd.do_chat_history = cmd2.Cmd.do_history
+
+        # remove history command:
+        del cmd2.Cmd.do_history
+        
+        # load env vars from .env file
         dotenv.load_dotenv()
+        # load api key from env
         openai.api_key = os.getenv('OPENAI_API_KEY')
 
     def do_sendgpt(self, arg):

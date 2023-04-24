@@ -1,6 +1,7 @@
 """
 A python CLI ChatGPT chatbot
 """
+import datetime
 import os
 
 import cmd2
@@ -68,10 +69,21 @@ class ChatGPT(cmd2.Cmd):
             )
             return True
 
+        time_local = (
+            datetime.datetime.now(datetime.timezone.utc)
+            .astimezone()
+        )
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a chatbot"},
+                {
+                    "role": "system",
+                    "content": f"""You are a helpful assistant called ChatGPT_CMD.
+                     You have all the capabilities of ChatGPT but you run as a command line interface.
+                     Your responses should be informative and clear, but not excessively long. You have to help users quickly.
+                     Today's date is {time_local.strftime("%d %B, %Y")} and the current time is {time_local.strftime("%H:%M %p")}.""",
+                },
                 {"role": "user", "content": statement},
             ],
         )

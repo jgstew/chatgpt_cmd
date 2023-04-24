@@ -45,17 +45,24 @@ class ChatGPT(cmd2.Cmd):
         for choice in response.choices:
             result += choice.message.content
 
+        # output the response:
         self.poutput(result)
 
     def do_quit(self, arg):
-        """Exit the program"""
-        self.poutput("Exiting ChatGPT...")
-        return True
-    
+        """Exit the program if arg empty"""
+        if arg.strip() == "":
+            self.poutput("Exiting ChatGPT...")
+            return True
+        else:
+            self.do_sendgpt("quit " + arg)
+
     def do_exit(self, arg):
-        """alias for quit"""
-        self.do_quit(arg)
-        return True
+        """Exit the program if arg empty"""
+        if arg.strip() == "":
+            self.poutput("Exiting ChatGPT...")
+            return True
+        else:
+            self.do_sendgpt("exit " + arg)
     
     def default(self, arg):
         """if unknown command, send full thing to chatgpt"""

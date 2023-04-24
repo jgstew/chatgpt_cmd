@@ -10,7 +10,7 @@ class ChatGPT(cmd2.Cmd):
     def __init__(self):
         super().__init__()
 
-        # remove commands:
+        # remove built-in commands:
         del cmd2.Cmd.do_alias
         del cmd2.Cmd.do_edit
         del cmd2.Cmd.do_macro
@@ -20,10 +20,10 @@ class ChatGPT(cmd2.Cmd):
         del cmd2.Cmd.do_shell
         del cmd2.Cmd.do_shortcuts
 
-        # rename command:
+        # rename built-in commands:
         cmd2.Cmd.do_chat_history = cmd2.Cmd.do_history
 
-        # remove history command:
+        # remove built-in commands:
         del cmd2.Cmd.do_history
 
         # alias exit for quit
@@ -36,8 +36,16 @@ class ChatGPT(cmd2.Cmd):
 
     def default(self, arg):
         """if unknown command, send full thing to chatgpt"""
-        self.poutput(f" - Prompt: {arg.raw}")
-        self.do_sendgpt(arg.raw)
+
+        # check if input is a single word:
+        if arg.strip() == "":
+            self.perror(f"Unknown command `{arg.raw}`")
+            self.pfeedback("NOTE: arbitrary text with more than one word will be sent to chatgpt automatically")
+            self.pfeedback("Displaying help and list of commands:")
+            self.do_help("-v")
+        else:
+            # more than one word entered:
+            self.do_sendgpt(arg.raw)
 
     def do_sendgpt(self, arg):
         """Send a message to ChatGPT"""

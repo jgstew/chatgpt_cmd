@@ -21,7 +21,7 @@ class ChatGPT(cmd2.Cmd):
         del cmd2.Cmd.do_shortcuts
 
         # rename built-in commands:
-        cmd2.Cmd.do_chat_history = cmd2.Cmd.do_history
+        cmd2.Cmd.do_command_history = cmd2.Cmd.do_history
 
         # remove built-in commands:
         del cmd2.Cmd.do_history
@@ -36,6 +36,9 @@ class ChatGPT(cmd2.Cmd):
 
     def default(self, arg):
         """if unknown command, send full thing to chatgpt"""
+
+        # save entered item to history:
+        self.history.append(arg)
 
         # check if input is a single word:
         if arg.strip() == "":

@@ -3,11 +3,25 @@ a python cmd2 chatgpt chatbot
 
 currently does not send previous prompt and response to keep the conversation going.
 
+## Provide your OpenAI API Key:
+
+### use .env file:
+
 put your `OPENAI_API_KEY` in a `.env` file in the same folder as `chatgpt_cmd.py` like:
 
 ```
 OPENAI_API_KEY=your-key-goes-here
 ```
+
+### use environment variable:
+
+You can store `OPENAI_API_KEY` as an environment variable and it will be used.
+
+### use single session only command:
+
+Use `set_api_key` command in interactive CLI to set an API key for use only during the current session.
+
+## Example Usage:
 
 Example usage with non-interactive CLI: `python ./chatgpt_cmd.py "how long until newyears" exit`
 

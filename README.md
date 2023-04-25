@@ -23,14 +23,14 @@ Use `set_api_key` command in interactive CLI to set an API key for use only duri
 
 ## Example Usage:
 
-Example usage with non-interactive CLI: `python ./chatgpt_cmd.py "how long until newyears" exit`
+### Example usage with non-interactive CLI: `python ./chatgpt_cmd.py "how long until newyears" exit`
 
 ```
 As today's date is 24 April, 2023, there are 8 months and 7 days until the next new year's eve, which is on 31 December, 2023.
 Exiting ChatGPT_CMD...
 ```
 
-Example usage with interactive CLI: `python ./chatgpt_cmd.py`
+### Example usage with interactive CLI: `python ./chatgpt_cmd.py`
 
 ```
 ChatGPT> write a poem about using chatgpt on the command line

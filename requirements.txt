@@ -1,2 +1,4 @@
+setuptools
+wheel
 openai
 python-dotenv

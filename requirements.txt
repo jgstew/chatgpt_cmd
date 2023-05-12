@@ -1,4 +1,5 @@
 setuptools
 wheel
+cmd2
 openai
 python-dotenv

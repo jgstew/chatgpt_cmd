@@ -72,7 +72,7 @@ class ChatGPT(cmd2.Cmd):
         time_local = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",

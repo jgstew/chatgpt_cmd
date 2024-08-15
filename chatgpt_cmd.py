@@ -3,6 +3,7 @@ A python CLI ChatGPT chatbot
 """
 import datetime
 import os
+import re
 
 import cmd2
 import dotenv
@@ -58,6 +59,15 @@ class ChatGPT(cmd2.Cmd):
         else:
             # more than one word entered:
             self.do_sendgpt(statement.raw)
+
+    def do_list_models(self, statement):
+        """print the list of openai models"""
+        for item in openai.Model.list()["data"]:
+            id = item["id"]
+            if "gpt-" in id and "-preview" not in id:
+                # do not match any model that contains 4 digits:
+                if not re.search(r"\d{4}", id):
+                    self.pfeedback(id)
 
     def do_sendgpt(self, statement):
         """Send a message to ChatGPT"""

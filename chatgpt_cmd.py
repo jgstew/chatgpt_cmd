@@ -14,6 +14,8 @@ class ChatGPT(cmd2.Cmd):
     """extends cmd2 which provides the interactivity"""
 
     prompt = "ChatGPT> "
+    # set default chatgpt model:
+    model="gpt-4o"
 
     def __init__(self):
         super().__init__()
@@ -82,7 +84,7 @@ class ChatGPT(cmd2.Cmd):
         time_local = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
         response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",
+            model=self.model,
             messages=[
                 {
                     "role": "system",

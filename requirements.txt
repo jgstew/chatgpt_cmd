@@ -1,5 +1,5 @@
 setuptools
 wheel
 cmd2
-openai
+openai==0.28
 python-dotenv

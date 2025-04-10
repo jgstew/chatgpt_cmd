@@ -1,8 +1,6 @@
 # chatgpt_cmd
 a python cmd2 chatgpt chatbot
 
-currently does not send previous prompt and response to keep the conversation going.
-
 ## Provide your OpenAI API Key:
 
 ### use .env file:

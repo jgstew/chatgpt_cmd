@@ -66,13 +66,11 @@ class ChatGPT(cmd2.Cmd):
         else:
             # more than one word entered:
             self.do_sendgpt(statement.raw)
-
-    def do_list_models(self, statement):
-        """Print the list of OpenAI models"""
-
+    
+    def cache_available_models(self):
+        """Cache available models from OpenAI API"""
         if not self.cached_models:
             try:
-                # Query the API and cache the models
                 self.cached_models = [
                     item["id"]
                     for item in openai.Model.list()["data"]
@@ -80,17 +78,32 @@ class ChatGPT(cmd2.Cmd):
                 ]
             except Exception as e:
                 self.perror(f"Error fetching models: {e}")
-                return
+
+    def do_list_models(self, statement):
+        """Print the list of OpenAI models"""
+
+        if not self.cached_models:
+            self.cache_available_models()
 
         # Display the cached models
         if statement != "do_not_display_models":
             for model_id in self.cached_models:
                 self.pfeedback(model_id)
 
+    def complete_select_model(self, text, line, begidx, endidx):
+        """Define completion for apis."""
+
+        # only initialize once
+        if not self.cached_models:
+            self.cache_available_models()
+
+        # return the matching subset:
+        return [name for name in self.cached_models if name.startswith(text)]
+
     def do_select_model(self, statement):
         """Select a model from the cached list of models"""
         if not self.cached_models:
-            self.do_list_models("do_not_display_models")
+            self.cache_available_models()
 
         model_name = statement.strip()
         if model_name in self.cached_models:

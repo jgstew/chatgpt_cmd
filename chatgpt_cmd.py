@@ -17,6 +17,7 @@ class ChatGPT(cmd2.Cmd):
     # set default chatgpt model:
     model = "gpt-4o"
     context_limit = 20  # Maximum number of messages to keep in context
+    cached_models = None  # Class-level variable to cache models
 
     def __init__(self):
         super().__init__()
@@ -67,13 +68,23 @@ class ChatGPT(cmd2.Cmd):
             self.do_sendgpt(statement.raw)
 
     def do_list_models(self, statement):
-        """print the list of openai models"""
-        for item in openai.Model.list()["data"]:
-            id = item["id"]
-            if "gpt-" in id and "-preview" not in id:
-                # do not match any model that contains 4 digits:
-                if not re.search(r"\d{4}", id):
-                    self.pfeedback(id)
+        """Print the list of OpenAI models"""
+
+        if not self.cached_models:
+            try:
+                # Query the API and cache the models
+                self.cached_models = [
+                    item["id"]
+                    for item in openai.Model.list()["data"]
+                    if "gpt-" in item["id"] and "-preview" not in item["id"] and not re.search(r"\d{4}", item["id"])
+                ]
+            except Exception as e:
+                self.perror(f"Error fetching models: {e}")
+                return
+
+        # Display the cached models
+        for model_id in self.cached_models:
+            self.pfeedback(model_id)
 
     def do_sendgpt(self, statement):
         """Send a message to ChatGPT"""

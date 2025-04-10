@@ -15,7 +15,7 @@ class ChatGPT(cmd2.Cmd):
 
     prompt = "ChatGPT> "
     # set default chatgpt model:
-    model="gpt-4o"
+    model = "gpt-4o"
 
     def __init__(self):
         super().__init__()
@@ -43,6 +43,9 @@ class ChatGPT(cmd2.Cmd):
         dotenv.load_dotenv()
         # load api key from env
         openai.api_key = os.getenv("OPENAI_API_KEY")
+
+        # Initialize context for conversation history
+        self.context = []
 
     def default(self, statement):
         """if unknown command, send full thing to chatgpt"""
@@ -83,26 +86,39 @@ class ChatGPT(cmd2.Cmd):
 
         time_local = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
+        # Add user input to context
+        self.context.append({"role": "user", "content": statement})
+
+        # Prepare messages with context
+        messages = [
+            {
+                "role": "system",
+                "content": f"""You are a helpful assistant called ChatGPT_CMD.
+                 You have all the capabilities of ChatGPT but you run as a command line interface.
+                 Your responses should be informative and clear, but not excessively long. You have to help users quickly.
+                 Today's date is {time_local.strftime("%d %B, %Y")} and the current time is {time_local.strftime("%H:%M %p")}.""",
+            }
+        ] + self.context
+
         response = openai.ChatCompletion.create(
             model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"""You are a helpful assistant called ChatGPT_CMD.
-                     You have all the capabilities of ChatGPT but you run as a command line interface.
-                     Your responses should be informative and clear, but not excessively long. You have to help users quickly.
-                     Today's date is {time_local.strftime("%d %B, %Y")} and the current time is {time_local.strftime("%H:%M %p")}.""",
-                },
-                {"role": "user", "content": statement},
-            ],
+            messages=messages,
         )
 
         result = ""
         for choice in response.choices:
             result += choice.message.content
 
-        # output the response:
+        # Add ChatGPT response to context
+        self.context.append({"role": "assistant", "content": result})
+
+        # Output the response:
         self.poutput(result)
+
+    def do_clear_context(self, _=""):
+        """Clear the conversation context"""
+        self.context = []
+        self.pfeedback("Conversation context cleared.")
 
     def do_set_api_key(self, statement):
         """Set openai api key for current session only"""

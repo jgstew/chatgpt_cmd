@@ -16,6 +16,7 @@ class ChatGPT(cmd2.Cmd):
     prompt = "ChatGPT> "
     # set default chatgpt model:
     model = "gpt-4o"
+    context_limit = 20  # Maximum number of messages to keep in context
 
     def __init__(self):
         super().__init__()
@@ -89,6 +90,10 @@ class ChatGPT(cmd2.Cmd):
         # Add user input to context
         self.context.append({"role": "user", "content": statement})
 
+        # Trim context if it exceeds the limit
+        if len(self.context) > self.context_limit:
+            self.context.pop(0)
+
         # Prepare messages with context
         messages = [
             {
@@ -111,6 +116,10 @@ class ChatGPT(cmd2.Cmd):
 
         # Add ChatGPT response to context
         self.context.append({"role": "assistant", "content": result})
+
+        # Trim context if it exceeds the limit
+        if len(self.context) > self.context_limit:
+            self.context.pop(0)
 
         # Output the response:
         self.poutput(result)

@@ -83,8 +83,22 @@ class ChatGPT(cmd2.Cmd):
                 return
 
         # Display the cached models
-        for model_id in self.cached_models:
-            self.pfeedback(model_id)
+        if statement != "do_not_display_models":
+            for model_id in self.cached_models:
+                self.pfeedback(model_id)
+
+    def do_select_model(self, statement):
+        """Select a model from the cached list of models"""
+        if not self.cached_models:
+            self.do_list_models("do_not_display_models")
+
+        model_name = statement.strip()
+        if model_name in self.cached_models:
+            self.model = model_name
+            self.pfeedback(f"Model switched to: {model_name}")
+        else:
+            self.perror(f"Model '{model_name}' not found in cached models.")
+            self.pfeedback("Use the 'list_models' command to view available models.")
 
     def do_sendgpt(self, statement):
         """Send a message to ChatGPT"""
